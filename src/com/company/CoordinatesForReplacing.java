@@ -8,8 +8,6 @@ public class CoordinatesForReplacing {
 
     int endIndex;
 
-
-
     public CoordinatesForReplacing(final String word, final int startIndex, final int endIndex) {
         this.word = word;
         this.startIndex = startIndex;
