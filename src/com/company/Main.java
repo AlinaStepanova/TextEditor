@@ -1,15 +1,22 @@
 package com.company;
+
 import java.util.List;
-import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
         List<String> words;
-        String pathIn = "C:\\Users\\Alina\\IdeaProjects\\syst_programming_1\\src\\com\\company\\input.txt";
+        String pathIn = "/Users/vova/Desktop/TextEditor/src/com/company/input.txt";
         FilesWork filesWork = new FilesWork();
         words = filesWork.readFromFile(pathIn);
 
         new TextEditor(words);
     }
+
+
+    /*public void main(String[] args) {
+        Lab lab = new Lab();
+        List<String>
+        lab.start()
+    }*/
 }

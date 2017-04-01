@@ -1,28 +1,98 @@
 package com.company;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputMethodEvent;
-import java.awt.event.InputMethodListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
 
 /**
  * Created by Alina on 29.03.2017.
  */
-public class TextEditor implements ActionListener {
+public class TextEditor implements ActionListener, EditTextListener.TextChangeListener {
 
     private static final int EDIT_ROWS = 20;
+
     private static final int EDIT_COLS = 50;
+
     private static final int NUM_CHARS = 15;
 
     private JTextField searchField;
 
     private JTextArea textArea;
 
+    private JButton maska;
+
+    private Lab lab;
+
     TextEditor(List<String> words) {
         initUI(words);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        CoordinatesForReplacing coordinatesForReplacing = new CoordinatesForReplacing();
+        JButton source = (JButton) e.getSource();
+        if (source.equals(maska)) {
+            onMaskaClick();
+        }
+
+    }
+
+    private List<CoordinatesForReplacing> onMaskaClick() {
+        String allText = textArea.getText();
+        Set<String> start =
+                lab.filter(Arrays.asList(allText.split("\n")), searchField.getText());
+        List<CoordinatesForReplacing> coordinatesForReplacings = new ArrayList<>();
+
+        textArea.requestFocus();
+        start.forEach(word -> {
+            for (int i = 0; i < allText.length(); ) {
+                int startIndex = allText.indexOf(word, i);
+                if (startIndex == -1) {
+                    break;
+                }
+                int endIndex = startIndex + word.length();
+                selectText(startIndex, endIndex);
+                coordinatesForReplacings.add(new CoordinatesForReplacing(word, startIndex,
+                        endIndex));
+                i += endIndex;
+            }
+        });
+        return coordinatesForReplacings;
+    }
+
+    private void selectText(final int startIndex, final int endIndex) {
+        Highlighter highlighter = textArea.getHighlighter();
+        Highlighter.HighlightPainter painter =
+                new DefaultHighlighter.DefaultHighlightPainter(Color.pink);
+        try {
+            highlighter.addHighlight(startIndex, endIndex, painter);
+        } catch (BadLocationException e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onTextChange(final String text) {
+
     }
 
     private void initUI(List<String> words) {
@@ -49,9 +119,11 @@ public class TextEditor implements ActionListener {
         JCheckBox searchFromBeginningBox = new JCheckBox("Спочатку", true);
         JCheckBox searchFromCursorPositionBox = new JCheckBox("Від курсора", false);
         JPanel searchPanel = new JPanel();
-        searchPanel.add(initButton("Маска"));
+        maska = initButton("Маска");
+        searchPanel.add(maska);
         searchPanel.add(searchField);
-        searchField.getDocument().addDocumentListener();
+
+        searchField.getDocument().addDocumentListener(new EditTextListener(this));
         searchPanel.add(searchFromBeginningBox);
         searchPanel.add(searchFromCursorPositionBox);
         return searchPanel;
@@ -89,13 +161,5 @@ public class TextEditor implements ActionListener {
         JTextArea editor = new JTextArea(EDIT_ROWS, EDIT_COLS);
         words.forEach((str) -> editor.append(str + '\n'));
         return editor;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        JButton source = (JButton) e.getSource();
-        String text = textArea.getText();
-        textArea.requestFocus();
-        textArea.select(1, 3);
     }
 }

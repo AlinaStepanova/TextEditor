@@ -1,7 +1,8 @@
 package com.company;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Lab {
 
@@ -49,12 +50,25 @@ public class Lab {
         }
     }
 
-    public List<String> start(List<String> words, String mask) {
-        List<String> outputList = new ArrayList<>();
+    public Set<String> start(List<String> words, String mask) {
+        Set<String> outputList = new HashSet<>();
         for (String word: words) {
             try {
                 String correctWord = changeWord(word, mask);
                 outputList.add(correctWord);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return outputList;
+    }
+
+    public Set<String> filter(List<String> words, String mask) {
+        Set<String> outputList = new HashSet<>();
+        for (String word: words) {
+            try {
+                changeWord(word, mask);
+                outputList.add(word);
             } catch (Exception e) {
                 e.printStackTrace();
             }
