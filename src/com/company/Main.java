@@ -12,11 +12,4 @@ public class Main {
 
         new TextEditor(words);
     }
-
-
-    /*public void main(String[] args) {
-        Lab lab = new Lab();
-        List<String>
-        lab.start()
-    }*/
 }
