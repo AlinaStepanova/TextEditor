@@ -14,8 +14,6 @@ public class Lab {
         int comeIndex = maskStr.indexOf(',', openBracketIndex);
         int closeBracketIndex = maskStr.indexOf('}', comeIndex);
 
-        //System.out.println("openbrindex " + openBracketIndex);
-
         if (openBracketIndex < 0 || comeIndex < 0 || closeBracketIndex < 0) {
             if (wordStr.equals(maskStr)) {
                 return maskStr;
